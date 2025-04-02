@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
 import 'alerta_model.dart'; // Asegúrate de importar tu modelo
+import 'notifications_service.dart';
 
 class AlertsPage extends StatefulWidget {
   const AlertsPage({super.key});
@@ -72,7 +73,7 @@ class _AlertsPageState extends State<AlertsPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              agregarInfo();
+              agregarAlerta();
             },
             child: const Text("Guardar"),
           ),
@@ -81,8 +82,15 @@ class _AlertsPageState extends State<AlertsPage> {
     );
   }
 
-  void agregarInfo() {
+  //agrega una alerta a la base de datos
+  void agregarAlerta() {
     String info = _textController.text;
+    NotificationService().scheduleNotification(
+      title: "Tu alerta",
+      body: info,
+      hour: _selectedTime.hour,
+      minute: _selectedTime.minute
+    );
     setState(() {
       alertas_lista.add(Alerta(texto: info, hora: _selectedTime));
       _textController.clear();
@@ -90,8 +98,9 @@ class _AlertsPageState extends State<AlertsPage> {
     });
     saveToDatabase();
   }
-
-  void deleteTodo(int index) {
+  
+  //borra una alerta de la base de datos
+  void borrarAlerta(int index) {
     setState(() {
       alertas_lista.removeAt(index);
     });
@@ -118,7 +127,7 @@ class _AlertsPageState extends State<AlertsPage> {
             title: Text(alerta.texto),
             subtitle: Text(alerta.hora.format(context)),
             trailing: IconButton(
-              onPressed: () => deleteTodo(index),
+              onPressed: () => borrarAlerta(index),
               icon: const Icon(Icons.delete),
             ),
           );

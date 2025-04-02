@@ -2,6 +2,7 @@ import 'package:eco_habit/huella_page.dart';
 import 'package:eco_habit/lugares_page.dart';
 import 'package:flutter/material.dart';
 import 'alerts_page.dart';
+import 'notifications_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -49,7 +50,11 @@ class _HomePageState extends State<HomePage> {
                     _buildDisabledButton(Icons.menu_book, 'Guías'),
                     const SizedBox(height: 40),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        NotificationService().cancellAllNotifications(
+                          
+                        );
+                      },
                       child: const Text(
                         'Política y acuerdos de uso',
                         style: TextStyle(fontSize: 16, color: Colors.blue),

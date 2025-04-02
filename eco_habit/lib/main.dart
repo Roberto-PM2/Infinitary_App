@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'home_page.dart';
+import 'notifications_service.dart';
 
 void main() async {
+
   //inicializar hive
   await Hive.initFlutter();
 
   //abrir la caja
   await Hive.openBox("ALERTAS");
+
+  //agregar servicio de notificaciones:
+  //await NotificationService().initialize();
+  await NotificationService().initNotification(); // Inicializar notificaciones
+
   runApp(const MyApp());
 }
 
