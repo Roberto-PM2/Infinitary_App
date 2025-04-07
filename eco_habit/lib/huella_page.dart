@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_ce/hive.dart';
 import 'widgets/question_widget.dart';
 import 'widgets/result_widget.dart';
 
@@ -80,6 +81,25 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
   bool _quizFinished = false;
   double _huellaTotal = 0;
 
+  // Referencias a las cajas de Hive
+  late Box habitosBox;
+  late Box huellaBox;
+
+  @override
+  void initState() {
+    super.initState();
+    habitosBox = Hive.box("Habitos");
+    huellaBox = Hive.box("Huella_anual");
+
+    // Verificamos si ya existe un resultado guardado
+    final storedHuella = huellaBox.get("resultado");
+    if (storedHuella != null) {
+      _huellaTotal = storedHuella;
+      _quizFinished = true;
+      _quizStarted = true;
+    }
+  }
+
   void _startQuiz() {
     setState(() {
       _quizStarted = true;
@@ -89,6 +109,7 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
     });
   }
 
+  // Se espera que el widget question_widget llame a onSubmit con la respuesta (string)
   void _submitAnswer(String answer) {
     final currentQuestion = _questions[_currentQuestionIndex];
     _responses[currentQuestion['id']] = answer;
@@ -98,12 +119,14 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
       if (_currentQuestionIndex >= _questions.length) {
         _calculateHuella();
         _quizFinished = true;
+        // Guardar los resultados en Hive
+        huellaBox.put("resultado", _huellaTotal);
+        habitosBox.put("respuestas", _responses);
       }
     });
   }
 
   void _calculateHuella() {
-    // Se parsean las respuestas a números según corresponda
     double kmAuto = double.tryParse(_responses['km_auto'] ?? '0') ?? 0;
     double consumoAuto = double.tryParse(_responses['consumo_auto'] ?? '0') ?? 0;
     double kmTransporte = double.tryParse(_responses['km_transporte_publico'] ?? '0') ?? 0;
@@ -112,14 +135,12 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
     double agua = double.tryParse(_responses['agua'] ?? '0') ?? 0;
     int carne = int.tryParse(_responses['carne'] ?? '0') ?? 0;
     int lacteos = int.tryParse(_responses['lacteos'] ?? '0') ?? 0;
-    // Para la pregunta vegana, interpretamos "sí" como verdadero
     bool vegano = (_responses['vegano']?.toLowerCase() == 'sí' ||
         _responses['vegano']?.toLowerCase() == 's');
     int ropa = int.tryParse(_responses['ropa'] ?? '0') ?? 0;
     int electronicos = int.tryParse(_responses['electronicos'] ?? '0') ?? 0;
     int vuelos = int.tryParse(_responses['viajes_avion'] ?? '0') ?? 0;
 
-    // Cálculos (aproximaciones)
     double huellaAuto = (consumoAuto > 0)
         ? (kmAuto * 52 / consumoAuto) * 2.31 / 1000
         : 0;
@@ -144,7 +165,6 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
         huellaElectronicos +
         huellaVuelos;
 
-    // Ajuste si la persona sigue una dieta vegana (reducción del 20%)
     if (vegano) {
       total *= 0.8;
     }
@@ -159,11 +179,16 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
       _responses.clear();
       _currentQuestionIndex = 0;
       _huellaTotal = 0;
+      // Opcional: limpiar datos guardados en Hive
+      huellaBox.delete("resultado");
+      habitosBox.delete("respuestas");
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Si no se ha iniciado el cuestionario y no hay resultado guardado,
+    // mostramos la pantalla de inicio.
     if (!_quizStarted) {
       return Scaffold(
         appBar: AppBar(
@@ -171,14 +196,27 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
           backgroundColor: const Color(0xff368983),
         ),
         body: Center(
-          child: ElevatedButton(
-            onPressed: _startQuiz,
-            child: const Text("Comenzar cuestionario"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "inicie nuestro cuestionario para calcular su huella de carbono anual.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _startQuiz,
+                child: const Text("Comenzar cuestionario"),
+              ),
+            ],
           ),
         ),
       );
     }
 
+
+    // Si el cuestionario se ha finalizado (ya sea recién calculado o cargado de la base de datos)
     if (_quizFinished) {
       return ResultWidget(
         huellaTotal: _huellaTotal,
@@ -186,9 +224,12 @@ class _HuellaCarbonoState extends State<HuellaCarbono> {
       );
     }
 
-    return QuestionWidget(
-      question: _questions[_currentQuestionIndex],
-      onSubmit: _submitAnswer,
+    // Si se está en medio del cuestionario, mostramos la pregunta actual.
+    return Scaffold(
+      body: QuestionWidget(
+        question: _questions[_currentQuestionIndex],
+        onSubmit: _submitAnswer,
+      ),
     );
   }
 }

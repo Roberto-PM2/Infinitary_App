@@ -1,8 +1,9 @@
 import 'package:eco_habit/huella_page.dart';
-import 'package:eco_habit/lugares_page.dart';
+import 'package:eco_habit/lista_centros.dart';
 import 'package:flutter/material.dart';
 import 'alerts_page.dart';
 import 'notifications_service.dart';
+import 'politica.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,8 +52,9 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 40),
                     TextButton(
                       onPressed: () {
-                        NotificationService().cancellAllNotifications(
-                          
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const PoliticaPage()),
                         );
                       },
                       child: const Text(
