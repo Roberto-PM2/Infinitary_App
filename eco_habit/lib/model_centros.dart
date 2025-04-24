@@ -12,6 +12,9 @@ class Centro {
   final String telefono;
   final double calificacion;
   final String ciudad;
+  final double latitud;
+  final double longitud;
+
 
   Centro({
     required this.nombre,
@@ -27,6 +30,8 @@ class Centro {
     required this.telefono,
     required this.calificacion,
     required this.ciudad,
+    required this.latitud,
+    required this.longitud,
   });
 }
 
@@ -46,6 +51,8 @@ final List<Centro> centrosReciclaje = [
     telefono: '492 172 6002',
     calificacion: 5.0,
     ciudad: 'Zacatecas, Zacatecas',
+    latitud: 22.756718,
+    longitud: -102.597067,
   ),
   
   Centro(
@@ -62,6 +69,8 @@ final List<Centro> centrosReciclaje = [
     telefono: '492 899 5892',
     calificacion: 5.0,
     ciudad: 'Guadalupe, Zacatecas',
+    latitud: 22.751792812389258,
+    longitud: -102.50051516221002,
   ),
   
   Centro(
@@ -78,6 +87,8 @@ final List<Centro> centrosReciclaje = [
     telefono: '492 998 0906',
     calificacion: 4.3,
     ciudad: 'Guadalupe, Zacatecas',
+    latitud: 22.751082,
+    longitud: -102.486468,
   ),
 
 ];

@@ -1,9 +1,13 @@
 import 'package:eco_habit/huella_page.dart';
 import 'package:eco_habit/lista_centros.dart';
+import 'package:eco_habit/mapa_page.dart';
 import 'package:flutter/material.dart';
 import 'alerts_page.dart';
 import 'notifications_service.dart';
 import 'politica.dart';
+import 'package:geolocator/geolocator.dart';
+import 'guias_page.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +17,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future<Position> determinePosition() async{
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('error');
+        
+      }
+      
+    }
+    return await Geolocator.getCurrentPosition();
+    
+  }
+
+  void getCurrentLocation() async {
+    Position position = await determinePosition();
+    print(position.latitude);
+    print(position.longitude);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +72,25 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(builder: (context) => HuellaCarbono()),
                       );
                     }),
+                    
                     const SizedBox(height: 20),
-                    _buildDisabledButton(Icons.menu_book, 'Guías'),
+                    _buildButton(Icons.menu_book, 'Guías', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const GuiasPage()),
+                      );
+                    }),
+
+                    const SizedBox(height: 40),
+                    TextButton(
+                      onPressed: () {
+                        getCurrentLocation();
+                      },
+                      child: const Text(
+                        'clic aqui para activar permisos',
+                        style: TextStyle(fontSize: 16, color: Colors.green),
+                      ),
+                    ),
                     const SizedBox(height: 40),
                     TextButton(
                       onPressed: () {
