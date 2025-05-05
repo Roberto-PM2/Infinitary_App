@@ -14,6 +14,9 @@ void main() async {
   await Hive.openBox("Habitos");
   await Hive.openBox("Huella_anual");
 
+  //habitos diarios
+  await Hive.openBox("habitos_diarios");
+
   //agregar servicio de notificaciones:
   //await NotificationService().initialize();
   await NotificationService().initNotification(); // Inicializar notificaciones

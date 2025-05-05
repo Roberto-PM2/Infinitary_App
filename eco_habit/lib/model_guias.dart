@@ -1,9 +1,10 @@
 class Guia {
   final String titulo;
   final String descripcion;
-  final String categoria; // Ej: 'orgánico', 'inorgánico', 'papel', etc.
-  final String subcategoria; // Nueva propiedad: 'a', 'b' o 'c'
+  final String categoria;
+  final String subcategoria;
   final String imagenUrl;
+  final List<String> pasos; // Nuevo campo
 
   Guia({
     required this.titulo,
@@ -11,6 +12,7 @@ class Guia {
     required this.categoria,
     required this.subcategoria,
     required this.imagenUrl,
+    required this.pasos,
   });
 }
 
@@ -18,30 +20,27 @@ final List<Guia> listaGuias = [
   Guia(
     titulo: 'Cómo separar residuos orgánicos',
     descripcion: 'Aprende a distinguir entre restos de comida, hojas y residuos compostables.',
-    categoria: 'orgánico',
-    subcategoria: 'a',
+    categoria: 'organico',
+    subcategoria: 'otros',
     imagenUrl: 'assets/images/placeholder.png',
+    pasos: [
+      'Identifica los restos de comida y hojas.',
+      'Coloca estos residuos en un recipiente especial para orgánicos.',
+      'Evita mezclar con plásticos u otros materiales.',
+    ],
   ),
   Guia(
     titulo: 'Compostaje en casa',
     descripcion: 'Guía paso a paso para crear tu propio compost.',
-    categoria: 'orgánico',
-    subcategoria: 'b',
+    categoria: 'inorganico',
+    subcategoria: 'alimentos',
     imagenUrl: 'assets/images/placeholder.png',
+    pasos: [
+      'Consigue un contenedor de compost.',
+      'Añade capas de materiales verdes (restos de frutas, vegetales) y marrones (hojas secas, cartón).',
+      'Revuelve semanalmente.',
+      'Espera 2-3 meses para obtener compost natural.',
+    ],
   ),
-  Guia(
-    titulo: 'Guía para reciclar papel correctamente',
-    descripcion: 'Consejos para separar papel limpio y doblarlo para facilitar su reciclaje.',
-    categoria: 'papel',
-    subcategoria: 'a',
-    imagenUrl: 'assets/images/placeholder.png',
-  ),
-  Guia(
-    titulo: 'Reducir el uso de plásticos',
-    descripcion: 'Opciones reutilizables y hábitos sostenibles para evitar plásticos.',
-    categoria: 'estilo de vida',
-    subcategoria: 'c',
-    imagenUrl: 'assets/images/placeholder.png',
-  ),
-  // Agrega más guías...
+  // Agrega más guías con pasos
 ];

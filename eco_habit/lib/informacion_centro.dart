@@ -3,7 +3,6 @@ import 'model_centros.dart';
 import 'mapa_page.dart';  
 import 'package:latlong2/latlong.dart';
 
-
 class InformacionCentro extends StatefulWidget {
   final Centro centro;
 
@@ -21,19 +20,23 @@ class _InformacionCentroState extends State<InformacionCentro> {
   void initState() {
     super.initState();
     _diasSemana = [
-      'Lunes ' + widget.centro.lunes,
-      'Martes ' + widget.centro.martes,
-      'Miércoles ' + widget.centro.miercoles,
-      'Jueves ' + widget.centro.jueves,
-      'Viernes ' + widget.centro.viernes,
-      'Sábado ' + widget.centro.sabado,
-      'Domingo ' + widget.centro.domingo,
+      'Lunes', 
+      'Martes', 
+      'Miércoles', 
+      'Jueves', 
+      'Viernes', 
+      'Sábado', 
+      'Domingo',
     ];
-    _diaSeleccionado = _diasSemana[0];
+    _diaSeleccionado = _diasSemana[0];  // Default es el lunes
   }
 
   @override
   Widget build(BuildContext context) {
+    // Obtener el horario según el día seleccionado
+    int diaIndex = _diasSemana.indexOf(_diaSeleccionado!);
+    String horarioSeleccionado = widget.centro.horarios[diaIndex];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.centro.nombre),
@@ -108,6 +111,12 @@ class _InformacionCentroState extends State<InformacionCentro> {
                   child: Text(value),
                 );
               }).toList(),
+            ),
+            const SizedBox(height: 10),
+            // Mostrar horario del día seleccionado
+            Text(
+              'Horario: $horarioSeleccionado',
+              style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 40),
             // Botón para ver el mapa

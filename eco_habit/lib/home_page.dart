@@ -7,6 +7,7 @@ import 'notifications_service.dart';
 import 'politica.dart';
 import 'package:geolocator/geolocator.dart';
 import 'guias_page.dart';
+import 'huella_menu.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -69,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                     _buildButton(Icons.eco, 'Huella de carbono', () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HuellaCarbono()),
+                        MaterialPageRoute(builder: (context) => const HuellaMenu()),
                       );
                     }),
                     

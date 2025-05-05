@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'model_guias.dart';
+import 'infomacion_guia.dart';
+
 
 class GuiasPage extends StatefulWidget {
   const GuiasPage({super.key});
@@ -10,14 +12,11 @@ class GuiasPage extends StatefulWidget {
 
 class _GuiasPageState extends State<GuiasPage> {
   final List<String> categorias = [
-    'orgánico',
-    'inorgánico',
-    'papel',
-    'metal',
-    'cartón',
-    'estilo de vida'
+    'organico',
+    'inorganico',
+    'otros',
   ];
-  final List<String> subcategorias = ['a', 'b', 'c'];
+  final List<String> subcategorias = ['papel', 'plastico', 'alimentos', 'otros'];
   String? filtroCategoria;
   String? filtroSubcategoria;
 
@@ -141,6 +140,15 @@ class _GuiasPageState extends State<GuiasPage> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InformacionGuia(guia: guia),
+                        ),
+                      );
+                    },
+
                   ),
                 );
               },
