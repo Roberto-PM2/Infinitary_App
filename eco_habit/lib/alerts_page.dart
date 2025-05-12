@@ -217,7 +217,6 @@ class _AlertsPageState extends State<AlertsPage> {
     );
   }
 
-
   // Elimina una alerta
   void borrarAlerta(int index) {
     setState(() {

@@ -6,7 +6,7 @@ import 'alerts_page.dart';
 import 'notifications_service.dart';
 import 'politica.dart';
 import 'package:geolocator/geolocator.dart';
-import 'guias_page.dart';
+import 'guias/guias_page.dart';
 import 'huella_menu.dart';
 
 

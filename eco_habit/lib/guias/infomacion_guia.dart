@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'model_guias.dart';
+import 'guias_model.dart';
 
 class InformacionGuia extends StatefulWidget {
   final Guia guia;

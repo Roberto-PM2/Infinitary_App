@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'model_guias.dart';
+import 'guias_model.dart';
 import 'infomacion_guia.dart';
 
 
@@ -111,49 +111,56 @@ class _GuiasPageState extends State<GuiasPage> {
             ),
 
           Expanded(
-            child: ListView.builder(
-              itemCount: guiasFiltradas.length,
-              itemBuilder: (context, index) {
-                final guia = guiasFiltradas[index];
-                return Card(
-                  margin: const EdgeInsets.all(12),
-                  child: ListTile(
-                    leading: Image.asset(guia.imagenUrl, width: 50, fit: BoxFit.cover),
-                    title: Text(guia.titulo),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(guia.descripcion),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Chip(
-                              label: Text(guia.categoria),
-                              backgroundColor: Colors.green.shade100,
-                            ),
-                            const SizedBox(width: 4),
-                            Chip(
-                              label: Text(guia.subcategoria),
-                              backgroundColor: Colors.blue.shade100,
-                            ),
-                          ],
-                        ),
-                      ],
+            child: guiasFiltradas.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No hay guías disponibles en esta categoría.',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InformacionGuia(guia: guia),
+                  )
+                : ListView.builder(
+                    itemCount: guiasFiltradas.length,
+                    itemBuilder: (context, index) {
+                      final guia = guiasFiltradas[index];
+                      return Card(
+                        margin: const EdgeInsets.all(12),
+                        child: ListTile(
+                          leading: Image.asset(guia.imagenUrl, width: 50, fit: BoxFit.cover),
+                          title: Text(guia.titulo),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(guia.descripcion),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Chip(
+                                    label: Text(guia.categoria),
+                                    backgroundColor: Colors.green.shade100,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Chip(
+                                    label: Text(guia.subcategoria),
+                                    backgroundColor: Colors.blue.shade100,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InformacionGuia(guia: guia),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },
-
                   ),
-                );
-              },
-            ),
           ),
+
         ],
       ),
     );

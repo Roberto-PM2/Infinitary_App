@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'model_centros.dart';
+import 'centros_model.dart';
 import 'informacion_centro.dart';
 
 class CentrosReciclaje extends StatelessWidget {
