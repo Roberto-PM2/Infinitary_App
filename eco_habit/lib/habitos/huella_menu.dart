@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'huella_page.dart';
-import 'registro_diario.dart'; // Este es el nuevo widget básico.
+import 'huella_anual/huella_anual.dart';
+import 'registro diario/registro_diario.dart'; 
 
 class HuellaMenu extends StatefulWidget {
   const HuellaMenu({super.key});
@@ -13,8 +13,8 @@ class _HuellaMenuState extends State<HuellaMenu> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HuellaCarbono(),
-    RegistroDiarioPage(),
+    HuellaAnual(), //aqui
+    RegistroDiarioView(),
   ];
 
   @override
@@ -31,7 +31,7 @@ class _HuellaMenuState extends State<HuellaMenu> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
-            label: 'Encuesta Anual',
+            label: 'Huella Anual',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.today),

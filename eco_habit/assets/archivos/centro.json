@@ -1,5 +1,6 @@
 [
   {
+    "id": "1",
     "nombre": "Recicladora esquivel",
     "imagenUrl": "assets/images/recicladora_esquivel.png",
     "direccion": "Heroes de La Reforma 113 C, Estrella de Oro, 98087 Zacatecas, Zac.",
@@ -19,6 +20,7 @@
     "longitud": -102.597067
   },
   {
+    "id": "2",
     "nombre": "Reciclajes Revolución",
     "imagenUrl": "assets/images/reciclaje_revolucion.jpg",
     "direccion": "Calz. Revolución Mexicana 10, Ejidal, 98613 Guadalupe, Zac.",
@@ -38,6 +40,7 @@
     "longitud": -102.50051516221002
   },
   {
+    "id": "3",
     "nombre": "Reciclajes Miravalle",
     "imagenUrl": "assets/images/reciclaje_miravele.jpg",
     "direccion": "Carretera panamericana salida a Ags km 1 Entre bonito pueblo y, Villas de Guadalupe, 98613",

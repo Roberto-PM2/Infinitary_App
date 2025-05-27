@@ -1,16 +1,16 @@
-import 'package:eco_habit/habitos/huella_page.dart';
-import 'package:eco_habit/centros/lista_centros.dart';
-import 'package:eco_habit/centros/mapa_page.dart';
+import 'package:eco_habit/habitos/huella_anual/huella_anual.dart';
+import 'package:eco_habit/centros_de_reciclaje/lista_centros.dart';
+import 'package:eco_habit/centros_de_reciclaje/mapa_page.dart';
 import 'package:flutter/material.dart';
 import 'notificaciones/alerts_page.dart';
 import 'notificaciones/notifications_service.dart';
 import 'politica.dart';
 import 'package:geolocator/geolocator.dart';
-import 'guias/guias_page.dart';
+import 'Consultar_guias_reciclaje/guias_page.dart';
 import 'habitos/huella_menu.dart';
 
 import 'metas_ecologicas/meta_page.dart';
-import 'calculadora/calculadora_impacto_page.dart';
+import 'calculadora_impacto_ambiental/calculadora_impacto_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

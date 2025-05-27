@@ -2,14 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controlador_centros.dart';
 import 'informacion_centro.dart';
+import 'model_centros.dart'; 
 
 class CentrosReciclaje extends StatelessWidget {
   const CentrosReciclaje({super.key});
 
+  void solicitarCentros(ControladorCentros controlador) {
+    controlador.cargarCentros();
+  }
+
+  void navegar(BuildContext context, Centro centro) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InformacionCentro(centro: centro),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ControladorCentros()..cargarCentros(),
+      create: (_) => ControladorCentros(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Centros de Reciclaje"),
@@ -17,6 +31,11 @@ class CentrosReciclaje extends StatelessWidget {
         ),
         body: Consumer<ControladorCentros>(
           builder: (context, controlador, child) {
+            // Llamar a solicitarCentros al inicializar
+            if (!controlador.cargando && controlador.centros.isEmpty) {
+              solicitarCentros(controlador);
+            }
+
             if (controlador.cargando) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -40,14 +59,7 @@ class CentrosReciclaje extends StatelessWidget {
                     ),
                     title: Text(centro.nombre),
                     subtitle: Text(centro.ciudad),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InformacionCentro(centro: centro),
-                        ),
-                      );
-                    },
+                    onTap: () => navegar(context, centro),
                   ),
                 );
               },
