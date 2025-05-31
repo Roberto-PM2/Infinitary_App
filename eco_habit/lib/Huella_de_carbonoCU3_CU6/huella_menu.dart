@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'huella_anual/huella_anual.dart';
-import 'registro diario/registro_diario.dart'; 
+import 'Estimar_Huella_AnualCU3/huella_anual.dart';
+import 'Registrar_habitos_de_consumoCU6/registro_diario.dart'; 
 
 class HuellaMenu extends StatefulWidget {
   const HuellaMenu({super.key});

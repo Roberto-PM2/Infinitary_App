@@ -1,16 +1,15 @@
-import 'package:eco_habit/habitos/huella_anual/huella_anual.dart';
-import 'package:eco_habit/centros_de_reciclaje/lista_centros.dart';
-import 'package:eco_habit/centros_de_reciclaje/mapa_page.dart';
+import 'package:eco_habit/Huella_de_carbonoCU3_CU6/Estimar_Huella_AnualCU3/huella_anual.dart';
+import 'package:eco_habit/Consultar_Centros_de_ReciclajeCU2_CU4/lista_centros.dart';
+import 'package:eco_habit/Consultar_Centros_de_ReciclajeCU2_CU4/mapa_page.dart';
+import 'package:eco_habit/Registrar_metas_personalesCU7/registrar_meta_page.dart';
 import 'package:flutter/material.dart';
-import 'notificaciones/alerts_page.dart';
-import 'notificaciones/notifications_service.dart';
+import 'Configurar_AlertaCU1/alerts_page.dart';
+import 'Configurar_AlertaCU1/notifications_service.dart';
 import 'politica.dart';
 import 'package:geolocator/geolocator.dart';
-import 'Consultar_guias_reciclaje/guias_page.dart';
-import 'habitos/huella_menu.dart';
-
-import 'metas_ecologicas/meta_page.dart';
-import 'calculadora_impacto_ambiental/calculadora_impacto_page.dart';
+import 'Consultar_guias_de_reciclajeCU5/guias_page.dart';
+import 'Huella_de_carbonoCU3_CU6/huella_menu.dart';
+import 'Calcular_impacto_ambiental_por_residuoCU8/calculadora_impacto_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -89,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MetaPage()), // Crea esta página
+                                RegistrarMetaPage()), // Crea esta página
                       );
                     }),
                     const SizedBox(height: 20),

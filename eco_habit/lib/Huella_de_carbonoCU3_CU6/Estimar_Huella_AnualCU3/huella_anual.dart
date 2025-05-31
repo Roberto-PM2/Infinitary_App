@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'controlador_huella_anual.dart';
-import '../../widgets/question_widget.dart';
-import '../../widgets/result_widget.dart';
+import 'widgets/question_widget.dart';
+import 'widgets/result_widget.dart';
 
 class HuellaAnual extends StatefulWidget {
   const HuellaAnual({super.key});

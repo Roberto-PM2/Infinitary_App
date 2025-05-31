@@ -90,8 +90,8 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {},
-                            //onPressed: _limpiarCampos,
+                            //onPressed: () {},
+                            onPressed: _limpiarCampos,
                             child: Text('Cancelar'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey, 
@@ -103,8 +103,8 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
                         SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {},
-                            // onPressed: _calcularImpacto,
+                            // onPressed: () {},
+                            onPressed: _calcularImpacto,
                             child: Text('Calcular'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green[700], 

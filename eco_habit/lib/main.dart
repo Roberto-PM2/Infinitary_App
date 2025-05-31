@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'home_page.dart';
-import 'notificaciones/notifications_service.dart';
+import 'Configurar_AlertaCU1/notifications_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'hive_service.dart';
 
