@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive_ce/hive.dart';
-import 'alerta_model.dart'; // Asegúrate de importar tu modelo
-import 'notifications_service.dart';
+import 'controlador_alerta.dart';
+import 'modelo_alerta.dart';
 
 class AlertsPage extends StatefulWidget {
   const AlertsPage({super.key});
@@ -11,16 +10,22 @@ class AlertsPage extends StatefulWidget {
 }
 
 class _AlertsPageState extends State<AlertsPage> {
-  final mis_notificaciones = Hive.box("ALERTAS");
   final _textController = TextEditingController();
+  final _alertasController = AlertasController();
   TimeOfDay _selectedTime = TimeOfDay.now();
   List<Alerta> alertas_lista = [];
 
   @override
   void initState() {
-    final lista = mis_notificaciones.get("LISTA_ALERTAS") ?? [];
-    alertas_lista = lista.map<Alerta>((item) => Alerta.fromMap(item)).toList();
+    _cargarAlertas();
     super.initState();
+  }
+
+  Future<void> _cargarAlertas() async {
+    final alertas = await _alertasController.obtenerAlertas();
+    setState(() {
+      alertas_lista = alertas;
+    });
   }
 
   Future<void> _selectTime(BuildContext context) async {
@@ -67,7 +72,7 @@ class _AlertsPageState extends State<AlertsPage> {
                             setState(() {
                               _selectedTime = picked;
                             });
-                            setStateDialog(() {}); // Redibujar la ventana al ingresar una hora
+                            setStateDialog(() {});
                           }
                         },
                         child: Text(
@@ -81,23 +86,20 @@ class _AlertsPageState extends State<AlertsPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _textController.clear();
-                  },
+                  onPressed: () => Navigator.pop(context),
                   child: const Text("Cancelar"),
                 ),
                 TextButton(
-                  onPressed: () {
-                    if (_textController.text.trim().isEmpty) {
-                      // Puedes mostrar un snackbar, toast o simplemente retornar
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Por favor ingresa un texto para la alerta')),
-                      );
-                      return;
+                  onPressed: () async {
+                    await _alertasController.agregarAlerta(
+                      texto: _textController.text,
+                      hora: _selectedTime,
+                      context: context,
+                    );
+                    if (mounted) {
+                      Navigator.pop(context);
+                      await _cargarAlertas();
                     }
-                    Navigator.pop(context);
-                    agregarAlerta();
                   },
                   child: const Text("Guardar"),
                 ),
@@ -109,25 +111,6 @@ class _AlertsPageState extends State<AlertsPage> {
     );
   }
 
-
-  // Agrega una nueva alerta
-  void agregarAlerta() {
-    String info = _textController.text;
-    NotificationService().scheduleNotification(
-      title: "Tu alerta",
-      body: info,
-      hour: _selectedTime.hour,
-      minute: _selectedTime.minute,
-    );
-    setState(() {
-      alertas_lista.add(Alerta(texto: info, hora: _selectedTime));
-      _textController.clear();
-      _selectedTime = TimeOfDay.now();
-    });
-    saveToDatabase();
-  }
-
-  // Edita una alerta existente
   void editarAlerta(int index) {
     final alerta = alertas_lista[index];
     _textController.text = alerta.texto;
@@ -161,7 +144,7 @@ class _AlertsPageState extends State<AlertsPage> {
                             setState(() {
                               _selectedTime = picked;
                             });
-                            setStateDialog(() {}); // Redibuja el diálogo
+                            setStateDialog(() {});
                           }
                         },
                         child: Text(
@@ -175,37 +158,21 @@ class _AlertsPageState extends State<AlertsPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _textController.clear();
-                  },
+                  onPressed: () => Navigator.pop(context),
                   child: const Text("Cancelar"),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    if (_textController.text.trim().isEmpty) {
-                      // Puedes mostrar un snackbar, toast o simplemente retornar
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Por favor ingresa un texto para la alerta')),
-                      );
-                      return;
-                    }
-                    NotificationService().scheduleNotification(
-                      title: "Tu alerta",
-                      body: _textController.text,
-                      hour: _selectedTime.hour,
-                      minute: _selectedTime.minute,
+                  onPressed: () async {
+                    await _alertasController.editarAlerta(
+                      index: index,
+                      texto: _textController.text,
+                      hora: _selectedTime,
+                      context: context,
                     );
-                    setState(() {
-                      alertas_lista[index] = Alerta(
-                        texto: _textController.text,
-                        hora: _selectedTime,
-                      );
-                      _textController.clear();
-                      _selectedTime = TimeOfDay.now();
-                    });
-                    saveToDatabase();
+                    if (mounted) {
+                      Navigator.pop(context);
+                      await _cargarAlertas();
+                    }
                   },
                   child: const Text("Guardar"),
                 ),
@@ -217,19 +184,9 @@ class _AlertsPageState extends State<AlertsPage> {
     );
   }
 
-
-  // Elimina una alerta
-  void borrarAlerta(int index) {
-    setState(() {
-      alertas_lista.removeAt(index);
-    });
-    saveToDatabase();
-  }
-
-  // Guarda la lista en la base de datos Hive
-  void saveToDatabase() {
-    final listaMap = alertas_lista.map((alerta) => alerta.toMap()).toList();
-    mis_notificaciones.put("LISTA_ALERTAS", listaMap);
+  Future<void> borrarAlerta(int index) async {
+    await _alertasController.eliminarAlerta(index);
+    await _cargarAlertas();
   }
 
   @override
@@ -283,5 +240,11 @@ class _AlertsPageState extends State<AlertsPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 }

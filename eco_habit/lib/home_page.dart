@@ -106,16 +106,6 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 40),
                     TextButton(
                       onPressed: () {
-                        getCurrentLocation();
-                      },
-                      child: const Text(
-                        'clic aqui para activar permisos',
-                        style: TextStyle(fontSize: 16, color: Colors.green),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    TextButton(
-                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(

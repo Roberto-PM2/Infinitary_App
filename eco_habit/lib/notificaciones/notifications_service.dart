@@ -117,8 +117,8 @@ class NotificationService {
   }
 }
 
-  //cancelar todas las notificaciones
-  Future<void> cancellAllNotifications() async {
+  //cancelar las notificaciones
+  Future<void> cancellNotification() async {
     await notificationsPlugin.cancelAll();
   }
   
