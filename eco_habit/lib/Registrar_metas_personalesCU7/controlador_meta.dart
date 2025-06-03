@@ -73,9 +73,6 @@ class ControladorMeta {
     await ModeloMeta.eliminarDB(index);
   }
 
-  Future<void> actualizarProgreso(int index, double nuevoProgreso) async {
-    await ModeloMeta.actualizarProgresoDB(index, nuevoProgreso);
-  }
 
   Future<void> eliminarTodasLasMetas() async {
     await ModeloMeta.limpiarTodasDB();

@@ -95,13 +95,6 @@ class ModeloMeta {
     await caja.delete(_claveLista);
   }
 
-  static Future<void> actualizarProgresoDB(int indice, double nuevoProgreso) async {
-    final metas = await obtenerMetasDB();
-    if (indice >= 0 && indice < metas.length) {
-      metas[indice].progreso = nuevoProgreso;
-      await guardarTodas(metas);
-    }
-  }
 
   // === Utilidades ===
 

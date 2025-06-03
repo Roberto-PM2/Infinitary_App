@@ -14,7 +14,7 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
   void _calcularImpacto() {
     if (_tipoResiduoSeleccionado == null || _controladorPeso.text.isEmpty) {
       setState(() {
-        _controlador.calcularImpacto('0', ''); // Forzar error
+        _controlador.calcularImpacto('0', ''); 
       });
       return;
     }
