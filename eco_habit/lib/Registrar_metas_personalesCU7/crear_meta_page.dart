@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'controlador_meta.dart';
 import 'modelo_meta.dart';
 
 class CrearMetaPage extends StatefulWidget {
-  final MetaPersonal? metaExistente;
-  CrearMetaPage({this.metaExistente});
+  final ModeloMeta? metaExistente;
+  final int? index;
 
+  const CrearMetaPage({Key? key, this.metaExistente,this.index}) : super(key: key);
+  //const CrearMetaPage({super.key});
   @override
   _CrearMetaPageState createState() => _CrearMetaPageState();
+
+  
 }
 
 class _CrearMetaPageState extends State<CrearMetaPage> {
   final _formKey = GlobalKey<FormState>();
   final _tituloController = TextEditingController();
   final _valorObjetivoController = TextEditingController();
+  final ControladorMeta _controladorMeta = ControladorMeta();
 
   String? _tipoSeleccionado;
   String? _unidadSeleccionada;
@@ -22,12 +29,31 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
   String _emojiSeleccionado = '✨';
   bool _emojiManual = false;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.metaExistente != null) {
+      final m = widget.metaExistente!;
+      _tituloController.text = m.titulo ?? '';
+      _valorObjetivoController.text = m.valor?.toString() ?? '';
+      _tipoSeleccionado = m.tipo;
+      _unidadSeleccionada = m.unidad;
+      _fechaInicio = m.inicio;
+      _fechaFin = m.fin;
+      _emojiSeleccionado = m.emoji ?? '✨';
+      _emojiManual = true;
+    }
+  }
+
+
   final Map<String, List<String>> unidadesPorTipo = {
     'Ahorrar agua': ['litros'],
     'Ahorrar luz': ['kWh', 'horas'],
     'Reciclaje': ['kg', 'piezas'],
     'Reducir residuos': ['kg'],
   };
+
+  
 
   final Map<String, String> _sugerenciasEmoji = {
     'recicla': '♻️',
@@ -46,23 +72,6 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
   ];
 
   List<String> unidadesDisponibles = [];
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.metaExistente != null) {
-      final m = widget.metaExistente!;
-      _tituloController.text = m.titulo;
-      _valorObjetivoController.text = m.valor.toString();
-      _tipoSeleccionado = m.tipo;
-      _unidadSeleccionada = m.unidad;
-      _fechaInicio = m.inicio;
-      _fechaFin = m.fin;
-      _emojiSeleccionado = m.emoji;
-      _emojiManual = true;
-      unidadesDisponibles = unidadesPorTipo[_tipoSeleccionado!] ?? [];
-    }
-  }
 
   void _actualizarEmojiSugerido(String texto) {
     if (_emojiManual) return;
@@ -139,7 +148,10 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
         _fechaFin != null &&
         _tipoSeleccionado != null &&
         _unidadSeleccionada != null) {
-      final meta = MetaPersonal(
+      
+      final formatter = DateFormat('dd/MM/yyyy');
+
+      _controladorMeta.agregarMeta(
         titulo: _tituloController.text,
         tipo: _tipoSeleccionado!,
         valor: double.parse(_valorObjetivoController.text),
@@ -147,9 +159,39 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
         inicio: _fechaInicio!,
         fin: _fechaFin!,
         emoji: _emojiSeleccionado,
+        progreso: 0,
+        context: context,
       );
-      Navigator.pop(context, meta);
+
+      Navigator.pop(context, true); // cerrar la pantalla al guardar
     }
+  }
+
+  void _actualizarMeta(dynamic metaExistente) {
+    if (_formKey.currentState!.validate() &&
+        _fechaInicio != null &&
+        _fechaFin != null &&
+        _tipoSeleccionado != null &&
+        _unidadSeleccionada != null) {
+      
+      final formatter = DateFormat('dd/MM/yyyy');
+
+      _controladorMeta.actualizarMeta(
+        //aqui
+          index: widget.index!,
+          titulo: _tituloController.text,
+          tipo: _tipoSeleccionado!,
+          valor: double.parse(_valorObjetivoController.text),
+          unidad: _unidadSeleccionada!,
+          inicio: _fechaInicio!,
+          fin: _fechaFin!,
+          emoji: _emojiSeleccionado,
+          progreso: 0,
+          context: context,               
+      );
+      Navigator.pop(context, true); // cerrar la pantalla al guardar
+    }
+    
   }
 
   @override
@@ -164,17 +206,28 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       appBar: AppBar(
-        title: Text('Nueva Meta'),
+        title: Text(widget.metaExistente != null ? 'Editar Meta' : 'Nueva Meta'),
         backgroundColor: Colors.blue[50],
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: _crearMeta,
-            child: Text('Crear', style: TextStyle(color: Colors.black)),
-          )
+            onPressed: () {
+              if (widget.metaExistente != null) {
+                _actualizarMeta(widget.metaExistente!);
+              } else {
+                _crearMeta();
+              }
+            },
+            child: Text(
+              widget.metaExistente != null ? 'Actualizar' : 'Crear',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
         ],
+
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -253,13 +306,13 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
                 onPressed: _seleccionarFechaInicio,
                 child: Text(_fechaInicio == null
                     ? 'Seleccionar fecha de inicio'
-                    : 'Inicio: ${_fechaInicio!.toLocal()}'.split(' ')[0]),
+                    : 'Inicio: ${DateFormat('dd/MM/yyyy').format(_fechaInicio!)}'),
               ),
               ElevatedButton(
                 onPressed: _seleccionarFechaFin,
                 child: Text(_fechaFin == null
                     ? 'Seleccionar fecha de fin'
-                    : 'Fin: ${_fechaFin!.toLocal()}'.split(' ')[0]),
+                    : 'Fin: ${DateFormat('dd/MM/yyyy').format(_fechaFin!)}'),
               ),
             ],
           ),
@@ -268,4 +321,3 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
     );
   }
 }
-

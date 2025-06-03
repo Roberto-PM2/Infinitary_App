@@ -1,7 +1,7 @@
 import 'package:eco_habit/Huella_de_carbonoCU3_CU6/Estimar_Huella_AnualCU3/huella_anual.dart';
 import 'package:eco_habit/Consultar_Centros_de_ReciclajeCU2_CU4/lista_centros.dart';
 import 'package:eco_habit/Consultar_Centros_de_ReciclajeCU2_CU4/mapa_page.dart';
-import 'package:eco_habit/Registrar_metas_personalesCU7/registrar_meta_page.dart';
+import 'package:eco_habit/Registrar_metas_personalesCU7/metas_page.dart';
 import 'package:flutter/material.dart';
 import 'Configurar_AlertaCU1/alerts_page.dart';
 import 'Configurar_AlertaCU1/notifications_service.dart';
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                RegistrarMetaPage()), // Crea esta página
+                                MetasPage()), 
                       );
                     }),
                     const SizedBox(height: 20),
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                CalculadoraImpactoPage()), // Crea esta página
+                                CalculadoraImpactoPage()), 
                       );
                     }),
                     const SizedBox(height: 40),

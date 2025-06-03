@@ -1,51 +1,74 @@
 import 'package:flutter/material.dart';
-import 'modelo_meta.dart';
 import 'crear_meta_page.dart';
+import 'modelo_meta.dart';
+import 'controlador_meta.dart';
 
-class RegistrarMetaPage extends StatefulWidget {
+class MetasPage extends StatefulWidget {
   @override
-  _RegistrarMetaPageState createState() => _RegistrarMetaPageState();
+  _MetasPageState createState() => _MetasPageState();
 }
 
-class _RegistrarMetaPageState extends State<RegistrarMetaPage> {
+class _MetasPageState extends State<MetasPage> {
+  final ControladorMeta _controlador = ControladorMeta();
+  List<ModeloMeta> _metas = [];
   DateTime selectedDate = DateTime.now();
   int weekOffset = 0;
-  List<MetaPersonal> _metas = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarMetas();
+  }
+
+  Future<void> _cargarMetas() async {
+    final metas = await _controlador.obtenerMetas();
+    setState(() {
+      _metas = metas;
+    });
+  }
 
   List<DateTime> _getWeekDays(DateTime baseDate) {
     final monday = baseDate.subtract(Duration(days: baseDate.weekday - 1));
     return List.generate(7, (i) => monday.add(Duration(days: i)));
   }
 
-  List<MetaPersonal> get _metasFiltradas {
-    return _metas.where((m) =>
-      selectedDate.isAfter(m.inicio.subtract(Duration(days: 1))) &&
-      selectedDate.isBefore(m.fin.add(Duration(days: 1)))).toList();
+  List<ModeloMeta> get _metasFiltradas {
+    return _metas.where((m) {
+      final inicio = m.inicio;
+      final fin = m.fin;
+      return selectedDate.isAfter(inicio.subtract(Duration(days: 1))) &&
+          selectedDate.isBefore(fin.add(Duration(days: 1)));
+    }).toList();
   }
 
   List<DateTime> get _fechasFin {
     return _metas.map((m) => m.fin).toList();
   }
 
-  void _crearOModificarMeta({MetaPersonal? existente, int? index}) async {
+  void _crearMeta() async {
     final resultado = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => CrearMetaPage(metaExistente: existente),
-      ),
+      MaterialPageRoute(builder: (_) => CrearMetaPage()),
     );
-    if (resultado != null && resultado is MetaPersonal) {
-      setState(() {
-        if (index != null) {
-          _metas[index] = resultado;
-        } else {
-          _metas.add(resultado);
-        }
-      });
+    if (resultado == true) {
+      _cargarMetas(); // Recarga la lista después de crear
     }
   }
 
-  void _agregarProgreso(MetaPersonal meta, int index) {
+  // NUEVO: Editar meta existente
+  void _editarMeta(ModeloMeta existente, int index) async {
+    final resultado = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CrearMetaPage(metaExistente: existente, index: index,),
+      ),
+    );
+    if (resultado == true) {
+      _cargarMetas(); // Recarga la lista después de editar
+    }
+  }
+
+  void _agregarProgreso(ModeloMeta meta, int index) async {
     TextEditingController controller = TextEditingController();
     showDialog(
       context: context,
@@ -63,14 +86,26 @@ class _RegistrarMetaPageState extends State<RegistrarMetaPage> {
           ),
           TextButton(
             child: Text("Guardar"),
-            onPressed: () {
+            onPressed: () async {
               final avance = double.tryParse(controller.text);
               if (avance != null && avance > 0) {
+                final nuevoProgreso = (meta.progreso ?? 0.0) + avance;
+                meta.progreso = nuevoProgreso > meta.valor ? meta.valor : nuevoProgreso;
+                await _controlador.actualizarMeta(
+                  index: index,
+                  titulo: meta.titulo,
+                  tipo: meta.tipo,
+                  valor: meta.valor,
+                  unidad: meta.unidad,
+                  inicio: meta.inicio,
+                  fin: meta.fin,
+                  emoji: meta.emoji,
+                  progreso: meta.progreso ?? 0.0,
+                  context: context,
+                );
+
                 setState(() {
-                  final nuevoProgreso = _metas[index].progreso + avance;
-                  _metas[index].progreso = nuevoProgreso > _metas[index].valor
-                      ? _metas[index].valor
-                      : nuevoProgreso;
+                  _metas[index] = meta;
                 });
               }
               Navigator.pop(context);
@@ -187,8 +222,10 @@ class _RegistrarMetaPageState extends State<RegistrarMetaPage> {
                     itemBuilder: (context, index) {
                       final meta = _metasFiltradas[index];
                       final realIndex = _metas.indexOf(meta);
-                      final porcentaje = meta.progreso / meta.valor;
-                      final completada = meta.progreso >= meta.valor;
+                      final progreso = meta.progreso ?? 0.0;
+                      final valor = meta.valor;
+                      final porcentaje = progreso / valor;
+                      final completada = progreso >= valor;
 
                       return Card(
                         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -201,16 +238,16 @@ class _RegistrarMetaPageState extends State<RegistrarMetaPage> {
                             children: [
                               ListTile(
                                 contentPadding: EdgeInsets.zero,
-                                onTap: () => _crearOModificarMeta(existente: meta, index: realIndex),
+                                //aqui
+                                onTap: () => _editarMeta(meta, realIndex), 
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.white,
-                                  child: Text(
-                                  meta.emoji, style: TextStyle(fontSize: 24),),
+                                  child: Text(meta.emoji ?? '🎯', style: TextStyle(fontSize: 24)),
                                 ),
                                 title: Row(
                                   children: [
                                     Expanded(
-                                      child: Text(meta.titulo,
+                                      child: Text(meta.titulo ?? '',
                                           style: TextStyle(fontWeight: FontWeight.bold)),
                                     ),
                                     if (!completada)
@@ -269,7 +306,7 @@ class _RegistrarMetaPageState extends State<RegistrarMetaPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('${meta.progreso.toStringAsFixed(2)} / ${meta.valor.toStringAsFixed(2)} ${meta.unidad}',
+                                  Text('${progreso.toStringAsFixed(2)} / ${valor.toStringAsFixed(2)} ${meta.unidad}',
                                       style: TextStyle(fontSize: 12)),
                                   if (!completada)
                                     TextButton(
@@ -288,7 +325,7 @@ class _RegistrarMetaPageState extends State<RegistrarMetaPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _crearOModificarMeta(),
+        onPressed: _crearMeta,
         backgroundColor: Colors.purple,
         child: Icon(Icons.add),
       ),

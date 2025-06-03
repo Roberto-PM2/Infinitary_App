@@ -20,8 +20,8 @@ void main() async {
   await Hive.openBox("Habitos");
   await Hive.openBox("Huella_anual");
   await Hive.openBox("habitos_diarios");
+  await Hive.openBox("metas");
 
-  //este
   await Hive.openBox("centros_reciclaje");
   await HiveService.cargarDatosInicialesDesdeJson();
 
