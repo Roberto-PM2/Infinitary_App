@@ -143,13 +143,25 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
   }
 
   void _crearMeta() {
-    if (_formKey.currentState!.validate() &&
-        _fechaInicio != null &&
-        _fechaFin != null &&
-        _tipoSeleccionado != null &&
-        _unidadSeleccionada != null) {
-      
-      final formatter = DateFormat('dd/MM/yyyy');
+    if (_formKey.currentState!.validate()) {
+      if (_fechaInicio == null || _fechaFin == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Debe seleccionar ambas fechas')),
+        );
+        return;
+      }
+      if (_fechaInicio!.isAfter(_fechaFin!)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('La fecha de inicio no puede ser posterior a la fecha de fin')),
+        );
+        return;
+      }
+      if (_tipoSeleccionado == null || _unidadSeleccionada == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Debe seleccionar un tipo y una unidad')),
+        );
+        return;
+      }
 
       _controladorMeta.agregarMeta(
         titulo: _tituloController.text,
@@ -163,36 +175,48 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
         context: context,
       );
 
-      Navigator.pop(context, true); // cerrar la pantalla al guardar
+      Navigator.pop(context, true);
     }
   }
 
   void _actualizarMeta(dynamic metaExistente) {
-    if (_formKey.currentState!.validate() &&
-        _fechaInicio != null &&
-        _fechaFin != null &&
-        _tipoSeleccionado != null &&
-        _unidadSeleccionada != null) {
-      
-      final formatter = DateFormat('dd/MM/yyyy');
+    if (_formKey.currentState!.validate()) {
+      if (_fechaInicio == null || _fechaFin == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Debe seleccionar ambas fechas')),
+        );
+        return;
+      }
+      if (_fechaInicio!.isAfter(_fechaFin!)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('La fecha de inicio no puede ser posterior a la fecha de fin')),
+        );
+        return;
+      }
+      if (_tipoSeleccionado == null || _unidadSeleccionada == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Debe seleccionar un tipo y una unidad')),
+        );
+        return;
+      }
 
       _controladorMeta.actualizarMeta(
-        //aqui
-          index: widget.index!,
-          titulo: _tituloController.text,
-          tipo: _tipoSeleccionado!,
-          valor: double.parse(_valorObjetivoController.text),
-          unidad: _unidadSeleccionada!,
-          inicio: _fechaInicio!,
-          fin: _fechaFin!,
-          emoji: _emojiSeleccionado,
-          progreso: 0,
-          context: context,               
+        index: widget.index!,
+        titulo: _tituloController.text,
+        tipo: _tipoSeleccionado!,
+        valor: double.parse(_valorObjetivoController.text),
+        unidad: _unidadSeleccionada!,
+        inicio: _fechaInicio!,
+        fin: _fechaFin!,
+        emoji: _emojiSeleccionado,
+        progreso: 0,
+        context: context,
       );
-      Navigator.pop(context, true); // cerrar la pantalla al guardar
+
+      Navigator.pop(context, true);
     }
-    
   }
+
 
   @override
   void dispose() {
