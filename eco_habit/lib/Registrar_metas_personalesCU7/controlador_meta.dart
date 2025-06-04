@@ -18,7 +18,7 @@ class ControladorMeta {
     required BuildContext context,
   }) async {
     if (titulo.trim().isEmpty || valor <= 0) {
-      _mostrarError(context, 'Por favor ingresa un título y un valor válido.');
+      _mostrarError(context, 'Por favor ingresa valores validos');
       return;
     }
 
@@ -51,7 +51,7 @@ class ControladorMeta {
     required BuildContext context,
   }) async {
     if (titulo.trim().isEmpty || valor <= 0) {
-      _mostrarError(context, 'Por favor ingresa un título y un valor válido.');
+      _mostrarError(context, 'Por favor ingresa valores validos');
       return;
     }
 

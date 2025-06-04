@@ -18,6 +18,7 @@ class _RegistroDiarioViewState extends State<RegistroDiarioView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registro Diario'),
+        backgroundColor: const Color(0xff368983),
       ),
       body: Column(
         children: [

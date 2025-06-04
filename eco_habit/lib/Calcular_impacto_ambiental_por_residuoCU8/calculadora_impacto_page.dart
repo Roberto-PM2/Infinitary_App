@@ -14,11 +14,11 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
   void _calcularImpacto() {
     if (_tipoResiduoSeleccionado == null || _controladorPeso.text.isEmpty) {
       setState(() {
-        _controlador.calcularImpacto('0', ''); 
+        _controlador.calcularImpacto('0', '');
       });
       return;
     }
-    
+
     setState(() {
       _controlador.calcularImpacto(
         _controladorPeso.text,
@@ -40,11 +40,12 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Calculadora de Impacto Ambiental'),
-        backgroundColor: Colors.green[700],
+        backgroundColor: const Color(0xff368983),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Recuadro de entrada de datos
             Card(
@@ -59,8 +60,7 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
                         labelText: 'Tipo de residuo',
                         border: OutlineInputBorder(),
                       ),
-                      items: _controlador.modelo.obtenerTiposResiduos() // Cambiado a .modelo
-                          .map((String value) {
+                      items: _controlador.modelo.obtenerTiposResiduos().map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -90,11 +90,10 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            //onPressed: () {},
                             onPressed: _limpiarCampos,
                             child: Text('Cancelar'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey, 
+                              backgroundColor: Colors.grey,
                               foregroundColor: Colors.white,
                               padding: EdgeInsets.symmetric(vertical: 15),
                             ),
@@ -103,11 +102,10 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
                         SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
-                            // onPressed: () {},
                             onPressed: _calcularImpacto,
                             child: Text('Calcular'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green[700], 
+                              backgroundColor: Colors.green[700],
                               foregroundColor: Colors.white,
                               padding: EdgeInsets.symmetric(vertical: 15),
                             ),
@@ -120,49 +118,51 @@ class _CalculadoraImpactoPageState extends State<CalculadoraImpactoPage> {
               ),
             ),
             SizedBox(height: 20),
-            // Panel de resultados
+            // Panel de resultados centrado
             if (_controlador.resultado != null)
-              Card(
-                elevation: 4,
-                color: Colors.green[50],
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Impacto ambiental',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green[800],
+              Center(
+                child: Card(
+                  elevation: 4,
+                  color: Colors.green[50],
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Impacto ambiental',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[800],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '${(_controlador.resultado!['huellaCarbono'] as double).toStringAsFixed(2)} kg CO₂e',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        SizedBox(height: 8),
+                        Text(
+                          '${(_controlador.resultado!['huellaCarbono'] as double).toStringAsFixed(2)} kg CO₂e',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Tiempo de degradación',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green[800],
+                        SizedBox(height: 20),
+                        Text(
+                          'Tiempo de degradación',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[800],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        _controlador.resultado!['tiempoDegradacion'].toString(),
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        SizedBox(height: 8),
+                        Text(
+                          _controlador.resultado!['tiempoDegradacion'].toString(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

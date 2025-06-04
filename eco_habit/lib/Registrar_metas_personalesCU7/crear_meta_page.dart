@@ -207,7 +207,7 @@ class _CrearMetaPageState extends State<CrearMetaPage> {
       backgroundColor: Colors.blue[50],
       appBar: AppBar(
         title: Text(widget.metaExistente != null ? 'Editar Meta' : 'Nueva Meta'),
-        backgroundColor: Colors.blue[50],
+        backgroundColor: const Color(0xff368983),
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [

@@ -70,49 +70,72 @@ class _MetasPageState extends State<MetasPage> {
 
   void _agregarProgreso(ModeloMeta meta, int index) async {
     TextEditingController controller = TextEditingController();
+    String? errorMensaje;
+
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text("Agregar progreso"),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(hintText: "¿Cuánto avanzaste hoy?"),
-        ),
-        actions: [
-          TextButton(
-            child: Text("Cancelar"),
-            onPressed: () => Navigator.pop(context),
-          ),
-          TextButton(
-            child: Text("Guardar"),
-            onPressed: () async {
-              final avance = double.tryParse(controller.text);
-              if (avance != null && avance > 0) {
-                final nuevoProgreso = (meta.progreso ?? 0.0) + avance;
-                meta.progreso = nuevoProgreso > meta.valor ? meta.valor : nuevoProgreso;
-                await _controlador.actualizarMeta(
-                  index: index,
-                  titulo: meta.titulo,
-                  tipo: meta.tipo,
-                  valor: meta.valor,
-                  unidad: meta.unidad,
-                  inicio: meta.inicio,
-                  fin: meta.fin,
-                  emoji: meta.emoji,
-                  progreso: meta.progreso ?? 0.0,
-                  context: context,
-                );
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) => AlertDialog(
+            title: Text("Agregar progreso"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "¿Cuánto avanzaste hoy?",
+                    errorText: errorMensaje,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                child: Text("Cancelar"),
+                onPressed: () => Navigator.pop(context),
+              ),
+              TextButton(
+                child: Text("Guardar"),
+                onPressed: () async {
+                  final avance = double.tryParse(controller.text);
+                  if (avance == null) {
+                    setStateDialog(() {
+                      errorMensaje = "Por favor ingresa un número válido.";
+                    });
+                  } else if (avance <= 0) {
+                    setStateDialog(() {
+                      errorMensaje = "El valor debe ser mayor a cero.";
+                    });
+                  } else {
+                    final nuevoProgreso = (meta.progreso ?? 0.0) + avance;
+                    meta.progreso = nuevoProgreso > meta.valor ? meta.valor : nuevoProgreso;
+                    await _controlador.actualizarMeta(
+                      index: index,
+                      titulo: meta.titulo,
+                      tipo: meta.tipo,
+                      valor: meta.valor,
+                      unidad: meta.unidad,
+                      inicio: meta.inicio,
+                      fin: meta.fin,
+                      emoji: meta.emoji,
+                      progreso: meta.progreso ?? 0.0,
+                      context: context,
+                    );
 
-                setState(() {
-                  _metas[index] = meta;
-                });
-              }
-              Navigator.pop(context);
-            },
+                    setState(() {
+                      _metas[index] = meta;
+                    });
+
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -129,7 +152,7 @@ class _MetasPageState extends State<MetasPage> {
       backgroundColor: Color(0xFFF5ECFF),
       appBar: AppBar(
         title: Text('Mis Metas'),
-        backgroundColor: Color(0xFFF5ECFF),
+        backgroundColor: const Color(0xff368983),
         elevation: 0,
         foregroundColor: Colors.black,
       ),
